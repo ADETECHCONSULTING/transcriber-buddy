@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { VideoService } from '../video.service';
 
 @Component({
   selector: 'app-drag-drop',
@@ -7,6 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DragDropComponent {
   files: any[] = [];
+
+  constructor(private videoService: VideoService) {
+  }
 
   /**
    * on file drop handler
@@ -41,7 +45,14 @@ export class DragDropComponent {
         const progressInterval = setInterval(() => {
           if (this.files[index].progress === 100) {
             clearInterval(progressInterval);
-            this.uploadFilesSimulator(index + 1);
+            this.videoService.uploadVideo(this.files[index]).subscribe(
+              (response) => {
+                console.log('Video uploaded successfully', response);
+              },
+              (error) => {
+                console.log('Error uploading video', error);
+              }
+            );
           } else {
             this.files[index].progress += 5;
           }

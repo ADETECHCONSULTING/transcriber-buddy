@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { DragDropComponent } from './drag-drop/drag-drop.component';
 import { DndDirective } from './dnd.directive';
 import { ProgressComponent } from './progress/progress/progress.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ProgressComponent } from './progress/progress/progress.component';
     ProgressComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -5,7 +5,7 @@ os.environ["IMAGEIO_FFMPEG_EXE"] = "/opt/homebrew/bin//ffmpeg"
 import speech_recognition as sr
 import moviepy.editor as mp
 
-# Demander le nom de la vidéo en argument
+# Demander le nom de la vidéo en input
 video_name = sys.argv[1]
 
 # Définir le chemin d'accès complet de la vidéo
