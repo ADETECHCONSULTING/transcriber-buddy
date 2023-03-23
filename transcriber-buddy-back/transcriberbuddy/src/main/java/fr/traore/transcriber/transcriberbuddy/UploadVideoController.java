@@ -1,8 +1,7 @@
 package fr.traore.transcriber.transcriberbuddy;
 
-import org.python.core.PyFunction;
-import org.python.core.PyObject;
-import org.python.util.PythonInterpreter;
+import org.python.apache.commons.compress.compressors.FileNameUtil;
+import org.python.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 public class UploadVideoController {
@@ -25,7 +22,7 @@ public class UploadVideoController {
         try {
             // Déposer le fichier à la racine du dossier "downloads"
             file.transferTo(new File("/Users/adama/Documents/Projects/speech-transcription/downloads/" + fileName));
-            runPythonScript("Réunion");
+            runPythonScript(fileName.substring(0, fileName.lastIndexOf('.')));
             return ResponseEntity.ok("Fichier " + fileName + " enregistré avec succès.");
         } catch (IOException | InterruptedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -34,22 +31,22 @@ public class UploadVideoController {
     }
 
     private void runPythonScript(String input) throws IOException, InterruptedException {
-        Process process;
-        try{
-            process = Runtime.getRuntime().exec(new String[]{"script_python","arg1","arg2"});
-            mProcess = process;
-        }catch(Exception e) {
-            System.out.println("Exception Raised" + e.toString());
-        }
-        InputStream stdout = mProcess.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
-        String line;
-        try{
-            while((line = reader.readLine()) != null){
-                System.out.println("stdout: "+ line);
+        String scriptPath = "/Users/adama/Documents/Projects/speech-transcription/transcription.py";
+        String argument = "test-video";
+
+        try {
+            String[] command = new String[]{"python3", scriptPath, argument};
+            Process process = Runtime.getRuntime().exec(command);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
             }
-        }catch(IOException e){
-            System.out.println("Exception in reading output"+ e.toString());
+            reader.close();
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
+
 }
